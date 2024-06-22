@@ -41,7 +41,6 @@ foreach (var item in result.OrderBy(x => x.Value.City))
     Console.Write($"{item.Value.City}={item.Value.CalculateMin:F1}/{item.Value.CalculateAvg:F1}/{item.Value.CalculateMax:F1}, ");
 }
 Console.WriteLine();
-Console.WriteLine(result.Count);
 
 Dictionary<Utf8Span, Summary> ProcessChunk((long start, long length) range)
 {
@@ -92,6 +91,12 @@ Dictionary<Utf8Span, Summary> ProcessChunk((long start, long length) range)
 
         if (pointer < chunkEnd)
         {
+            long left = chunkEnd - pointer;
+            if (left < BUFFER_SIZE)
+            {
+                buffer = buffer.Slice(0, (int)left);
+            }
+            
             read = RandomAccess.Read(fileHandle, buffer, pointer);
         }
     }
